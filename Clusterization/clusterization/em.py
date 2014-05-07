@@ -5,12 +5,14 @@ import utils as utils
 
 def expectation_maximization(points, K, variance):
     # The initial means are random
-    old_means = tuple()
+    old_means = []
     means = random.sample(points, K)
     expectations = []
     while not utils.convergence(means, old_means):
         old_means = means
         # the E step
+        # the M step
+
 
     return means, expectations # returns a tuple of them
 

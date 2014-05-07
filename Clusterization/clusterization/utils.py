@@ -25,7 +25,7 @@ def plot_clusters(centroids, clusters):
         y_cluster = cluster[1]
 
         # setting a different color for each cluster
-        plt.scatter(x_cluster, y_cluster, c = np.random.rand(1, 3))
+        plt.scatter(x_cluster, y_cluster, c = np.random.rand(1, 5))
 
     plt.scatter(x_centroids, y_centroids, c = 'r')
     plt.show()
