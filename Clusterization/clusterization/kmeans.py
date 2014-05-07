@@ -16,7 +16,7 @@ import utils as utils
 
 def lloyd_kmeans(points, K):
     # The initial centroids are random
-    old_centroids = random.sample(points, K)
+    old_centroids = tuple()
     centroids = random.sample(points, K)
     while not utils.convergence(centroids, old_centroids):
         old_centroids = centroids
