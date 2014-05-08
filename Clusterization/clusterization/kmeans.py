@@ -30,7 +30,7 @@ def lloyd_kmeans(points, K):
 def assign_points_to_clusters(points, centroids):
     clusters = {}
     for point in points:
-        best_centroid = min([(c[0], np.linalg.norm(point - centroids[c[0]]) ** 2) for c in enumerate(centroids)],
+        best_centroid = min([(i, np.linalg.norm(point - centroids[i]) ** 2) for i in range(0, len(centroids))],
                             key = lambda t: t[1])
         best_centroid_key = best_centroid[0]
 
