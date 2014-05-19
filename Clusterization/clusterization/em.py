@@ -10,8 +10,8 @@ def estimation(K, means, points, stddev):
     points_size = len(points)
     expectations = np.zeros((points_size, K))
     for i in range(0, points_size):
-        total = np.zeros(2)
-        # total = 0
+        # total = np.zeros(2)
+        total = 0
         current_point = points[i]
         for j in range(0, K):
             total += stats.norm(means[j], stddev).pdf(current_point)
@@ -25,11 +25,11 @@ def maximization(K, expectations, points):
     points_size = len(points)
     means = []
     for j in range(0, K):
-        m_step_numerator = np.zeros(2)
-        # m_step_numerator = 0
+        # m_step_numerator = np.zeros(2)
+        m_step_numerator = 0
 
-        m_step_denominator = np.zeros(2)
-        # m_step_denominator = 0
+        # m_step_denominator = np.zeros(2)
+        m_step_denominator = 0
         for i in range(0, points_size):
             m_step_numerator += expectations[i][j] * points[i]
             m_step_denominator += expectations[i][j]
@@ -53,7 +53,7 @@ def expectation_maximization(points, K, stddev, means):
 
 error_msg = 'em.py -f <inputfile> -k <number of clusters> -m <comma-separated initial K means values> -s <stddev>'
 try:
-    opts, args = getopt.getopt(sys.argv[1:], "f:k:m:s:", ["file=", "means=", "stddev="])
+    opts, args = getopt.getopt(sys.argv[1:], "f:k:m:s:t", ["file=", "means=", "stddev=", "threshold="])
 except getopt.GetoptError:
     print error_msg
     sys.exit(2)
