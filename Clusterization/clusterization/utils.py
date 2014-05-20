@@ -32,5 +32,4 @@ def plot_clusters(centroids, clusters):
 
 
 def convergence(centroids, oldcentroids):
-    # return set([tuple(c) for c in centroids]) == set([tuple(c) for c in oldcentroids])
-    return centroids == oldcentroids
+    return np.array_equal(centroids, oldcentroids)

@@ -8,16 +8,29 @@ import scipy.stats as stats
 
 def estimation(K, means, points, stddev):
     points_size = len(points)
+    clusters = {}
     expectations = np.zeros((points_size, K))
     for i in range(0, points_size):
         total = 0
         current_point = points[i]
         for j in range(0, K):
             total += stats.norm(means[j], stddev).pdf(current_point)
+
+        max = [-1, 0]
+
         for j in range(0, K):
             expectations[i][j] = stats.norm(means[j], stddev).pdf(current_point) / total
+            # assigning points to the cluster with the highest probability
+            if expectations[i][j] > max[1]:
+                max[1] = expectations[i][j]
+                max[0] = j
 
-    return expectations
+        if max[0] in clusters:
+            clusters[max[0]].append(current_point)
+        else:
+            clusters[max[0]] = [current_point]
+
+    return expectations, clusters
 
 
 def maximization(K, expectations, points):
@@ -70,7 +83,6 @@ for opt, arg in opts:
         means_string = arg.split(',')
         means = [float(m) for m in means_string]
 
-
 if input_filename is None or K == 0:
     print error_msg
     sys.exit(2)
@@ -78,7 +90,7 @@ if input_filename is None or K == 0:
 input_points = utils.read_points(input_filename)
 
 if stddev is None:
-    stddev = np.std(input_points, axis = 0)
+    stddev = np.std(input_points, axis=0)
 
 if means is None:
     means = random.sample(input_points, K)
