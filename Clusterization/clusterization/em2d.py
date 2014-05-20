@@ -25,10 +25,7 @@ def maximization(K, expectations, points):
     points_size = len(points)
     means = []
     for j in range(0, K):
-        # m_step_numerator = np.zeros(2)
         m_step_numerator = 0
-
-        # m_step_denominator = np.zeros(2)
         m_step_denominator = 0
         for i in range(0, points_size):
             m_step_numerator += expectations[i][j] * points[i]

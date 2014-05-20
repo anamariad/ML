@@ -15,7 +15,7 @@ def plot_clusters(centroids, clusters):
     # we transpose them, so we could get 2 different arrays, representing the X and Y coordinates
     clusters_no = len(centroids)
 
-    centroids_transposed = np.array(centroids).transpose()
+    centroids_transposed = np.array(centroids).T
     x_centroids = centroids_transposed[0]
     y_centroids = centroids_transposed[1]
 
