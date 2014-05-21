@@ -30,6 +30,22 @@ def plot_clusters(centroids, clusters):
     plt.scatter(x_centroids, y_centroids, c = 'r')
     plt.show()
 
+def plot_clusters_1d(centroids, clusters):
+    # adapting the above function to work with one dimensional data
+    clusters_no = len(centroids)
+    x_centroids = np.array(centroids)
+    y_centroids = np.zeros(clusters_no)
+
+    for i in range(clusters_no):
+        x_cluster = np.array(clusters[i])
+        y_cluster = np.zeros(len(clusters[i]))
+
+        # setting a different color for each cluster
+        plt.scatter(x_cluster, y_cluster, c = np.random.rand(1, 3))
+
+    plt.scatter(x_centroids, y_centroids, c = 'r')
+    plt.show()
+
 
 def convergence(centroids, oldcentroids):
-    return np.array_equal(centroids, oldcentroids)
+    return np.linalg.norm(centroids - oldcentroids) < 0.01

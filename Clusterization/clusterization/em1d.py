@@ -8,38 +8,25 @@ import scipy.stats as stats
 
 def estimation(K, means, points, stddev):
     points_size = len(points)
-    clusters = {}
     expectations = np.zeros((points_size, K))
-    for i in range(0, points_size):
+    for i in range(points_size):
         total = 0
         current_point = points[i]
-        for j in range(0, K):
+        for j in range(K):
             total += stats.norm(means[j], stddev).pdf(current_point)
-
-        max = [-1, 0]
-
-        for j in range(0, K):
+        for j in range(K):
             expectations[i][j] = stats.norm(means[j], stddev).pdf(current_point) / total
-            # assigning points to the cluster with the highest probability
-            if expectations[i][j] > max[1]:
-                max[1] = expectations[i][j]
-                max[0] = j
 
-        if max[0] in clusters:
-            clusters[max[0]].append(current_point)
-        else:
-            clusters[max[0]] = [current_point]
-
-    return expectations, clusters
+    return expectations
 
 
 def maximization(K, expectations, points):
     points_size = len(points)
     means = []
-    for j in range(0, K):
+    for j in range(K):
         m_step_numerator = 0
         m_step_denominator = 0
-        for i in range(0, points_size):
+        for i in range(points_size):
             m_step_numerator += expectations[i][j] * points[i]
             m_step_denominator += expectations[i][j]
         means.append(m_step_numerator / m_step_denominator)
@@ -47,7 +34,7 @@ def maximization(K, expectations, points):
 
 
 def expectation_maximization(points, K, stddev, means):
-    old_means = []
+    old_means = np.zeros(means.shape)
 
     while not utils.convergence(means, old_means):
         old_means = means
@@ -55,10 +42,20 @@ def expectation_maximization(points, K, stddev, means):
         # the E step
         expectations = estimation(K, means, points, stddev)
         # the M step
-        means = maximization(K, expectations, points)
+        means = np.array(maximization(K, expectations, points))
 
     return means, expectations  # returns a tuple of them
 
+def assign_points_to_clusters(points, expectations, K):
+    clusters = {}
+    for i in range(len(points)):
+        best_cluster_key = max([(j, expectations[i][j]) for j in range(K)], key = lambda t: t[1])[0]
+
+        if best_cluster_key in clusters:
+            clusters[best_cluster_key].append(points[i])
+        else:
+            clusters[best_cluster_key] = [points[i]]
+    return clusters
 
 error_msg = 'em.py -f <inputfile> -k <number of clusters> -m <comma-separated initial K means values> -s <stddev>'
 try:
@@ -81,7 +78,7 @@ for opt, arg in opts:
         stddev = float(arg)
     elif opt in ('-m', '--means'):
         means_string = arg.split(',')
-        means = [float(m) for m in means_string]
+        means = np.array([float(m) for m in means_string])
 
 if input_filename is None or K == 0:
     print error_msg
@@ -93,11 +90,17 @@ if stddev is None:
     stddev = np.std(input_points, axis=0)
 
 if means is None:
-    means = random.sample(input_points, K)
+    means = np.array(random.sample(input_points, K))
 
 clusterization = expectation_maximization(input_points, K, stddev, means)
 
-print "centroids: {} \n expectations:\n {}".format(clusterization[0], clusterization[1])
+centroids = clusterization[0]
+expectations = clusterization[1]
+print "centroids: {} \n expectations:\n {}".format(centroids, expectations)
+
+clusters = assign_points_to_clusters(input_points, expectations, K)
+
+utils.plot_clusters_1d(centroids, clusters)
 
 
 

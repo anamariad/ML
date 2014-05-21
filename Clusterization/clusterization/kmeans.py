@@ -1,3 +1,4 @@
+import getopt
 import sys
 import random
 import numpy as np
@@ -16,14 +17,15 @@ import utils as utils
 
 def lloyd_kmeans(points, K):
     # The initial centroids are random
-    old_centroids = []
-    centroids = random.sample(points, K)
+    centroids = np.array(random.sample(points, K))
+    old_centroids = np.zeros(centroids.shape)
+
     while not utils.convergence(centroids, old_centroids):
         old_centroids = centroids
         # Assign all points to clusters
         clusters = assign_points_to_clusters(points, centroids)
         # Reevaluate centers
-        centroids = recompute_centroids(clusters)
+        centroids = np.array(recompute_centroids(clusters))
     return centroids, clusters # returns a tuple of them
 
 
@@ -49,10 +51,25 @@ def recompute_centroids(clusters):
     return new_centroids
 
 
-# arg1: input filename
-# arg2: number of clusters
-input_filename = sys.argv[1]
-K = int(sys.argv[2])
+error_msg = 'kmeans.py -f <inputfile> -k <number of clusters>'
+try:
+    opts, args = getopt.getopt(sys.argv[1:], "f:k:", ["file="])
+except getopt.GetoptError:
+    print error_msg
+    sys.exit(2)
+
+input_filename = None
+K = 0
+
+for opt, arg in opts:
+    if opt in ('-f', '--file'):
+        input_filename = arg
+    elif opt == '-k':
+        K = int(arg)
+
+if input_filename is None or K == 0:
+    print error_msg
+    sys.exit(2)
 
 input_points = utils.read_points(input_filename)
 clusterization = lloyd_kmeans(input_points, K)
