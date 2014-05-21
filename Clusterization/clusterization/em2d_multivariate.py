@@ -10,7 +10,7 @@ import utils as utils
 def multivariate_distribution(cov, current_point, mean):
     mean_point = matrix(current_point - mean)
     return 1 / np.sqrt((2 * np.pi) ** 2 * np.linalg.det(cov)) \
-           * np.exp(-1 / 2 * mean_point.T * cov.I * mean_point)
+           * np.exp(-1 / 2 * mean_point.T * np.linalg.inv(cov) * mean_point)
 
 
 def estimation(K, means, points, cov):
