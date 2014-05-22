@@ -35,7 +35,8 @@ def maximization(K, expectations, points):
 
 def expectation_maximization(points, K, stddev, means):
     old_means = np.zeros(means.shape)
-
+    expectations = None
+    clusters = None
     while not utils.convergence(means, old_means):
         old_means = means
 
@@ -44,7 +45,9 @@ def expectation_maximization(points, K, stddev, means):
         # the M step
         means = np.array(maximization(K, expectations, points))
 
-    return means, expectations  # returns a tuple of them
+        clusters = assign_points_to_clusters(points, expectations, K)
+
+    return means, expectations, clusters  # returns a tuple of them
 
 def assign_points_to_clusters(points, expectations, K):
     clusters = {}
@@ -59,7 +62,7 @@ def assign_points_to_clusters(points, expectations, K):
 
 error_msg = 'em.py -f <inputfile> -k <number of clusters> -m <comma-separated initial K means values> -s <stddev>'
 try:
-    opts, args = getopt.getopt(sys.argv[1:], "f:k:m:s:t", ["file=", "means=", "stddev=", "threshold="])
+    opts, args = getopt.getopt(sys.argv[1:], "f:k:m:s:", ["file=", "means=", "stddev="])
 except getopt.GetoptError:
     print error_msg
     sys.exit(2)
@@ -96,9 +99,10 @@ clusterization = expectation_maximization(input_points, K, stddev, means)
 
 centroids = clusterization[0]
 expectations = clusterization[1]
-print "centroids: {} \n expectations:\n {}".format(centroids, expectations)
+clusters = clusterization[2]
+print "centroids:\n {} \n expectations:\n {}".format(centroids, expectations)
 
-clusters = assign_points_to_clusters(input_points, expectations, K)
+
 
 utils.plot_clusters_1d(centroids, clusters)
 

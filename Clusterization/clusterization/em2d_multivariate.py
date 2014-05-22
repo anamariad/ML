@@ -1,14 +1,12 @@
-from cmath import sqrt
 import sys
 import getopt
 import random
 import numpy as np
-from numpy.matrixlib.defmatrix import matrix
 import utils as utils
 
 
 def multivariate_distribution(cov, current_point, mean):
-    mean_point = matrix(current_point - mean)
+    mean_point = current_point - mean
     return 1 / np.sqrt((2 * np.pi) ** 2 * np.linalg.det(cov)) \
            * np.exp(-1 / 2 * mean_point.T * np.linalg.inv(cov) * mean_point)
 
@@ -106,7 +104,7 @@ if means is None:
 
 clusterization = expectation_maximization(input_points, K, means)
 
-print "centroids: {} \n expectations:\n {}".format(clusterization[0], clusterization[1])
+print "centroids:\n {} \n expectations:\n {}".format(clusterization[0], clusterization[1])
 
 
 

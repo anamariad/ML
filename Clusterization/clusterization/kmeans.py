@@ -77,6 +77,6 @@ clusterization = lloyd_kmeans(input_points, K)
 centroids = clusterization[0]
 clusters = clusterization[1]
 
-print "centroids: {}".format(centroids)
+print "centroids:\n {}".format(centroids)
 
 utils.plot_clusters(centroids, clusters)
