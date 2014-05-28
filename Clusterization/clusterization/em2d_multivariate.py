@@ -2,13 +2,14 @@ import sys
 import getopt
 import random
 import numpy as np
+from numpy.matrixlib import matrix
 import utils as utils
 
 
 def multivariate_distribution(cov, current_point, mean):
-    mean_point = current_point - mean
+    mean_point = matrix(current_point - mean)
     return 1 / np.sqrt((2 * np.pi) ** 2 * np.linalg.det(cov)) \
-           * np.exp(-1 / 2 * mean_point.T * np.linalg.inv(cov) * mean_point)
+           * np.exp(-1 / 2 * mean_point * np.linalg.inv(cov) * mean_point.T)
 
 
 def estimation(K, means, points, cov):
@@ -42,9 +43,10 @@ def maximization(K, expectations, points):
         means.append(curr_mean)
 
         # updating the covariance
-        cov_numerator = np.zeros(2)
+        cov_numerator = np.zeros((2,2))
         for i in range(points_size):
-            cov_numerator += expectations[i][j] * (points[i] - curr_mean) * (points[i] - curr_mean).T
+            diff = matrix(points[i] - curr_mean)
+            cov_numerator += expectations[i][j] * diff.T * diff
 
         cov.append(cov_numerator / m_step_denominator)
 
