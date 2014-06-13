@@ -1,7 +1,6 @@
 __author__ = 'Annouk'
 
-import sys
-import random
+import os
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -32,7 +31,7 @@ def plot_clusters(centroids, clusters):
 
 def plot_clusters_1d(centroids, clusters):
     # adapting the above function to work with one dimensional data
-    clusters_no = len(centroids)
+    clusters_no = len(clusters)
     x_centroids = np.array(centroids)
     y_centroids = np.zeros(clusters_no)
 
@@ -47,5 +46,17 @@ def plot_clusters_1d(centroids, clusters):
     plt.show()
 
 
-def convergence(centroids, oldcentroids):
-    return np.linalg.norm(centroids - oldcentroids) < 0.01
+def convergence(centroids, oldcentroids, threshold):
+    return np.linalg.norm(centroids - oldcentroids) < threshold
+
+
+def print_matrix_to_file(matrix, output_file):
+
+    for i in range(len(matrix)):
+        output_file.write(','.join(str(nr) for nr in matrix[i]))
+        output_file.write('\n')
+
+def print_array_to_file(array, output_file):
+
+    output_file.write(','.join(str(nr) for nr in array))
+    output_file.write('\n')

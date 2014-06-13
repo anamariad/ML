@@ -15,12 +15,12 @@ import utils as utils
 #   for j in range(1, k):
 #       c_j = (1 / |S_j|) * sum(x_i, x_i from S_j)
 
-def lloyd_kmeans(points, K):
+def lloyd_kmeans(points, K, threshold):
     # The initial centroids are random
     centroids = np.array(random.sample(points, K))
     old_centroids = np.zeros(centroids.shape)
 
-    while not utils.convergence(centroids, old_centroids):
+    while not utils.convergence(centroids, old_centroids, threshold):
         old_centroids = centroids
         # Assign all points to clusters
         clusters = assign_points_to_clusters(points, centroids)
@@ -51,28 +51,31 @@ def recompute_centroids(clusters):
     return new_centroids
 
 
-error_msg = 'kmeans.py -f <inputfile> -k <number of clusters>'
+error_msg = 'kmeans.py -f <inputfile> -k <number of clusters> -t <threshold>'
 try:
-    opts, args = getopt.getopt(sys.argv[1:], "f:k:", ["file="])
+    opts, args = getopt.getopt(sys.argv[1:], "f:k:t:", ["file=", "threshold="])
 except getopt.GetoptError:
     print error_msg
     sys.exit(2)
 
 input_filename = None
 K = 0
+threshold = 0.01
 
 for opt, arg in opts:
     if opt in ('-f', '--file'):
         input_filename = arg
     elif opt == '-k':
         K = int(arg)
+    elif opt in ('-t', '--threshold'):
+        threshold = float(arg)
 
 if input_filename is None or K == 0:
     print error_msg
     sys.exit(2)
 
 input_points = utils.read_points(input_filename)
-clusterization = lloyd_kmeans(input_points, K)
+clusterization = lloyd_kmeans(input_points, K, threshold)
 
 centroids = clusterization[0]
 clusters = clusterization[1]
